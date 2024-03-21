@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Aula8Application {
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(Aula8Application.class, args);
 	}
 
