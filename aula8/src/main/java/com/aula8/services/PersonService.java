@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.aula8.exceptions.ResourceNotFoundException;
 import com.aula8.model.Person;
-import com.aula8.repositories.PersonRepository;
+import com.aula8.repositorys.PersonRepository;
 
 @Service
 public class PersonService {
