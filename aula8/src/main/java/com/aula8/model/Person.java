@@ -18,8 +18,8 @@ import java.io.Serializable;
 @Setter
 @ToString
 @Entity
-@Table(name = "person", schema = "public")
 @Getter
+@Table(name = "person", schema = "public")
 public class Person implements Serializable {
     @Id
     @JsonProperty("id")
