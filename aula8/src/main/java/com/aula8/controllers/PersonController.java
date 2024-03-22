@@ -1,65 +1,60 @@
 package com.aula8.controllers;
 
-import org.modelmapper.ModelMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.aula8.dtos.PersonDTO;
 import com.aula8.model.Person;
 import com.aula8.services.PersonService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-
     @Autowired
     private PersonService personService;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @GetMapping(value = "/{id}")
-    public ResponseEntity<PersonDTO> findById(@PathVariable(value = "id") Long id) {
+    public Person findById(@PathVariable(value = "id") Long id) {
         Person person = personService.findById(id);
-        if (person == null) {
-            return ResponseEntity.notFound().build();
-        }
-        PersonDTO personDTO = modelMapper.map(person, PersonDTO.class);
-        return ResponseEntity.ok(personDTO);
+        return person;
     }
 
     @GetMapping
-    public List<PersonDTO> findAll() {
-        List<Person> persons = personService.findAll();
-        return persons.stream()
-                .map(person -> modelMapper.map(person, PersonDTO.class))
-                .collect(Collectors.toList());
+    public List<Person> findAll(){
+        return personService.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<PersonDTO> create(@RequestBody PersonDTO personDTO) {
-        Person person = modelMapper.map(personDTO, Person.class);
-        Person createdPerson = personService.create(person);
-        PersonDTO createdPersonDTO = modelMapper.map(createdPerson, PersonDTO.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPersonDTO);
+    public Person create(@RequestBody Person person){
+        return personService.create(person);
     }
 
+    @SuppressWarnings("rawtypes")
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
-        personService.delete(id);
-        return ResponseEntity.noContent().build();
+    public  ResponseEntity delete(@PathVariable(value = "id") Long id){
+        try {
+            personService.delete(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @PutMapping
-    public ResponseEntity<PersonDTO> update(@RequestBody PersonDTO personDTO) {
-        Person person = modelMapper.map(personDTO, Person.class);
-        Person updatedPerson = personService.update(person);
-        PersonDTO updatedPersonDTO = modelMapper.map(updatedPerson, PersonDTO.class);
-        return ResponseEntity.ok(updatedPersonDTO);
+    public Person update(@RequestBody Person person){
+        return personService.update(person);
     }
 }
