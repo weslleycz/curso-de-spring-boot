@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.aula8.dtos.PersonDTO;
 import com.aula8.model.Person;
 import com.aula8.services.PersonService;
+import com.aula8.util.MediaType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,10 @@ public class PersonController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = { 
+        MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML,
+        MediaType.APPLICATION_YML })
     public ResponseEntity<PersonDTO> findById(@PathVariable(value = "id") Long id) {
         Person person = personService.findById(id);
         if (person == null) {
@@ -33,7 +37,13 @@ public class PersonController {
         return ResponseEntity.ok(personDTO);
     }
 
-    @GetMapping
+    @GetMapping(
+        produces = { 
+        MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML,
+        MediaType.APPLICATION_YML 
+    }
+        )
     public List<PersonDTO> findAll() {
         List<Person> persons = personService.findAll();
         return persons.stream()
@@ -41,7 +51,14 @@ public class PersonController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping
+    @PostMapping(consumes = { 
+        MediaType.APPLICATION_JSON,
+        MediaType.APPLICATION_XML,
+        MediaType.APPLICATION_YML },
+        produces = { 
+        MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML,
+        MediaType.APPLICATION_YML })
     public ResponseEntity<PersonDTO> create(@RequestBody PersonDTO personDTO) {
         Person person = modelMapper.map(personDTO, Person.class);
         Person createdPerson = personService.create(person);
@@ -55,7 +72,15 @@ public class PersonController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
+    @PutMapping(
+        consumes = { 
+        MediaType.APPLICATION_JSON,
+        MediaType.APPLICATION_XML,
+        MediaType.APPLICATION_YML
+     }, produces = { 
+        MediaType.APPLICATION_JSON,
+        MediaType.APPLICATION_XML,
+        MediaType.APPLICATION_YML })
     public ResponseEntity<PersonDTO> update(@RequestBody PersonDTO personDTO) {
         Person person = modelMapper.map(personDTO, Person.class);
         Person updatedPerson = personService.update(person);
